@@ -18,6 +18,7 @@ class AnythingLLMRealConnector {
    */
   async testAuthentication(): Promise<boolean> {
     console.log('🔐 Testing AnythingLLM Authentication...');
+<<<<<<< HEAD
     console.log('🔗 Base URL:', this.baseUrl);
     console.log('🔑 API Key:', this.apiKey ? `${this.apiKey.substring(0, 8)}...` : 'UNDEFINED');
     
@@ -26,6 +27,8 @@ class AnythingLLMRealConnector {
       console.error('❌ Missing API key or base URL');
       return false;
     }
+=======
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
     
     try {
       const response = await fetch(`${this.baseUrl}/api/v1/auth`, {
@@ -37,7 +40,10 @@ class AnythingLLMRealConnector {
       });
 
       console.log('📊 Auth Response Status:', response.status);
+<<<<<<< HEAD
       console.log('📊 Auth Response Headers:', Object.fromEntries(response.headers.entries()));
+=======
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
       
       if (response.ok) {
         const authData = await response.json();
@@ -46,16 +52,22 @@ class AnythingLLMRealConnector {
       } else {
         const errorData = await response.text();
         console.log('❌ Authentication failed:', response.status, errorData);
+<<<<<<< HEAD
         console.log('❌ Response URL:', response.url);
+=======
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
         return false;
       }
     } catch (error) {
       console.error('❌ Authentication error:', error);
+<<<<<<< HEAD
       console.error('❌ Error details:', {
         message: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
         name: error instanceof Error ? error.name : undefined
       });
+=======
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
       return false;
     }
   }
@@ -76,8 +88,15 @@ class AnythingLLMRealConnector {
       });
 
       if (response.ok) {
+<<<<<<< HEAD
         const workspaces = await response.json();
         console.log('✅ Workspaces found:', workspaces);
+=======
+        const data = await response.json();
+        const workspaces = data.workspaces || data; // Handle both response formats
+        console.log('✅ Workspaces found:', workspaces.length, 'workspaces');
+        console.log('📋 Workspace list:', workspaces.map(w => `${w.name} (${w.slug})`));
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
         return workspaces;
       } else {
         console.log('❌ Failed to get workspaces:', response.status);
@@ -217,7 +236,11 @@ class AnythingLLMRealConnector {
   }
 }
 
+<<<<<<< HEAD
 // Export the real connector
+=======
+// Export real connector
+>>>>>>> a4b59d2c91f1579da11ec6e9c7fd5ff0af91d4a1
 export const anythingLLMRealConnector = new AnythingLLMRealConnector(
   ANYTHINGLLM_API_KEY,
   ANYTHINGLLM_BASE_URL
