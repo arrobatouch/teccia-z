@@ -1,19 +1,36 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "🧠 ORUS Control Center",
-  description: "Panel de control del ecosistema cognitivo distribuido ORUS",
-  keywords: ["ORUS", "IA", "Modelscope", "AnythingLLM", "Control Center"],
-  authors: [{ name: "ORUS Team" }],
+  title: "TECCIA-Z - ORUS Control Center",
+  description: "Advanced control center for ORUS cognitive ecosystem. Monitor and interact with AI agents in real-time.",
+  keywords: ["TECCIA-Z", "ORUS", "AI", "Cognitive Computing", "Next.js", "TypeScript", "Tailwind CSS"],
+  authors: [{ name: "TECCIA Team" }],
   icons: {
-    icon: "/logo.svg",
+    icon: "/teccia-logo.png",
   },
   openGraph: {
-    title: "ORUS Control Center",
-    description: "Panel de control del ecosistema cognitivo distribuido",
+    title: "TECCIA-Z - ORUS Control Center",
+    description: "Advanced control center for ORUS cognitive ecosystem",
+    siteName: "TECCIA-Z",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TECCIA-Z - ORUS Control Center",
+    description: "Advanced control center for ORUS cognitive ecosystem",
   },
 };
 
@@ -23,8 +40,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className="antialiased bg-background text-foreground font-sans">
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+      >
         {children}
         <Toaster />
       </body>

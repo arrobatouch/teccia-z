@@ -12,29 +12,11 @@ TECCIA-Z es un panel de control futurista para interactuar con ORUS, el agente c
 - 💬 Chat directo con el agente cognitivo
 - 📟 Terminal de logs en tiempo real
 
-## 🏗️ Arquitectura
-
-```
-🧠 ORUS (Agente Cognitivo Maestro)
-    ↓
-📦 Contenedores Modelscope (Ejecutores Especializados)
-    ├── modelscope-voice (ASR/TTS)
-    ├── modelscope-vision (Imagen/Video)
-    ├── modelscope-reasoning (Razonamiento)
-    └── modelscope-XXX (Nuevas capacidades)
-    ↓
-📚 AnythingLLM (Memoria Central)
-    ↓
-🌐 Socket.IO + API REST (Comunicación)
-    ↓
-☁️ Elestio/Hetzner (Infraestructura Elástica)
-```
-
 ## 🚀 Tecnologías
 
 - **Frontend**: Next.js 15 + TypeScript + Tailwind CSS
 - **UI Components**: shadcn/ui (New York style)
-- **Backend**: Node.js + Express
+- **Backend**: Node.js + API Routes
 - **Styling**: Tailwind CSS con gradientes neón
 - **Icons**: Lucide React
 - **Animations**: CSS animations + Tailwind
@@ -57,11 +39,14 @@ src/
 │   ├── orus-connection/
 │   │   └── page.tsx            # Panel de control ORUS
 │   ├── layout.tsx              # Layout principal
-│   └── globals.css             # Estilos globales
-├── lib/
-│   └── orus-connector.ts       # Conector ORUS
-└── components/
-    └── ui/                     # Componentes shadcn/ui
+│   ├── globals.css             # Estilos globales
+│   └── api/
+│       └── orus/
+│           └── route.ts        # API endpoint para ORUS
+├── components/
+│   └── ui/                     # Componentes shadcn/ui
+└── lib/
+    └── utils.ts                # Utilidades
 ```
 
 ## 🎮 Uso
@@ -94,6 +79,7 @@ npm start
 - Consultas directas al agente cognitivo
 - Respuestas en formato JSON estructurado
 - Historial de conversaciones
+- Métricas de respuesta y confianza
 
 ### 📟 Terminal de Logs
 - Logs en tiempo real de todas las operaciones
@@ -104,7 +90,7 @@ npm start
 
 - **Principal**: `http://localhost:3000`
 - **Panel ORUS**: `http://localhost:3000/orus-connection`
-- **API ORUS**: `http://188.245.56.151:8085/query`
+- **API ORUS**: `http://localhost:3000/api/orus`
 
 ## 📊 Métricas del Sistema
 
@@ -120,6 +106,17 @@ El proyecto incluye un modo demostración con:
 - Respuestas automáticas a consultas
 - Logs animados del proceso
 - Estados visuales predefinidos
+
+## 🎨 Estilos Personalizados
+
+El proyecto incluye clases CSS personalizadas para:
+
+- `.glass-morphism` - Efecto de cristal esmerilado
+- `.neon-glow` - Efecto de neón brillante
+- `.neon-text` - Texto con brillo neón
+- `.terminal-text` - Estilo de terminal Matrix
+- `.pulse-glow` - Animación de pulso con brillo
+- `.float-animation` - Animación de flotación
 
 ## 🤝 Contribución
 

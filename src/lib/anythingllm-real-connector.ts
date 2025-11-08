@@ -61,8 +61,10 @@ class AnythingLLMRealConnector {
       });
 
       if (response.ok) {
-        const workspaces = await response.json();
-        console.log('✅ Workspaces found:', workspaces);
+        const data = await response.json();
+        const workspaces = data.workspaces || data; // Handle both response formats
+        console.log('✅ Workspaces found:', workspaces.length, 'workspaces');
+        console.log('📋 Workspace list:', workspaces.map(w => `${w.name} (${w.slug})`));
         return workspaces;
       } else {
         console.log('❌ Failed to get workspaces:', response.status);
@@ -202,7 +204,7 @@ class AnythingLLMRealConnector {
   }
 }
 
-// Export the real connector
+// Export real connector
 export const anythingLLMRealConnector = new AnythingLLMRealConnector(
   ANYTHINGLLM_API_KEY,
   ANYTHINGLLM_BASE_URL

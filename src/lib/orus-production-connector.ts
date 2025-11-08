@@ -14,7 +14,7 @@ interface ORUSProductionResponse {
 class ORUSProductionConnector {
   private readonly ORUS_ENDPOINT = "http://188.245.56.151:8085";
   private readonly ANYTHINGLLM_ENDPOINT = "https://orus.teccia.com.ar";
-  private readonly REALTIME_ENDPOINT = "https://realtime.teccia.com.ar";
+  private readonly REALTIME_ENDPOINT = "https://orus.teccia.com.ar";
   
   // From PDF: Socket.IO namespaces
   private readonly NAMESPACES = {
@@ -41,22 +41,37 @@ class ORUSProductionConnector {
     this.connectionStatus = 'connecting';
     
     try {
-      // Test main ORUS endpoint
+      // 1. Test main ORUS endpoint with timeout and retry
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+      
       const response = await fetch(`${this.ORUS_ENDPOINT}/query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Add any auth headers if needed from PDF
+          'Authorization': `Bearer orus_admin_2025`,
+          'X-ORUS-Token': 'orus_admin_2025',
+          'User-Agent': 'TECCIA-Z-Panel/1.3.0'
         },
         body: JSON.stringify({
-          text: "ORUS, sistema TECCIA-Z solicitando conexión. Estado del sistema."
-        })
+          text: "ORUS, sistema TECCIA-Z solicitando conexión. Estado del sistema.",
+          source: "TECCIA-Z Control Panel",
+          timestamp: new Date().toISOString(),
+          session_id: "teccia-z-session-" + Date.now()
+        }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const result = await response.json();
         console.log('✅ ORUS Production Connection Successful:', result);
         this.connectionStatus = 'connected';
+        
+        // 2. Test Socket.IO connection
+        await this.connectSocketIO();
+        
         return true;
       } else {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -153,9 +168,31 @@ class ORUSProductionConnector {
         method: 'GET'
       });
       
-      return response.ok;
+      if (response.ok) {
+        console.log('✅ Socket.IO server reachable');
+        return true;
+      } else {
+        console.log('❌ Socket.IO server not reachable');
+        return false;
+      }
     } catch (error) {
       console.log('⚠️ Realtime Connection Failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Connect to Socket.IO for real-time communication
+   */
+  async connectSocketIO(): Promise<boolean> {
+    console.log('🔌 Connecting to ORUS Socket.IO...');
+    
+    try {
+      // This would be implemented in the frontend
+      // For now, just test the endpoint
+      return await this.testRealtimeConnection();
+    } catch (error) {
+      console.error('❌ Socket.IO Connection Failed:', error);
       return false;
     }
   }
@@ -169,17 +206,26 @@ class ORUSProductionConnector {
     }
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+      
       const response = await fetch(`${this.ORUS_ENDPOINT}/query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer orus_admin_2025`,
+          'X-ORUS-Token': 'orus_admin_2025',
+          'User-Agent': 'TECCIA-Z-Panel/1.3.0'
         },
         body: JSON.stringify({ 
           text: text,
           source: "TECCIA-Z Control Panel",
           timestamp: new Date().toISOString()
-        })
+        }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const result = await response.json();

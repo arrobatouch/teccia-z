@@ -36,6 +36,8 @@ export default function ORUSProductionPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
+  const [isConnected, setIsConnected] = useState(false);
+  const [isBlackScreen, setIsBlackScreen] = useState(false);
 
   const addLog = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -46,6 +48,7 @@ export default function ORUSProductionPage() {
     setIsLoading(true);
     setIsScanning(true);
     setConnectionStatus('connecting');
+    setIsBlackScreen(true);
     addLog('🔐 Iniciando conexión con ORUS Production...');
     
     try {
@@ -59,43 +62,56 @@ export default function ORUSProductionPage() {
       if (orusConnected) {
         addLog('✅ ORUS Principal conectado');
         setConnectionStatus('connected');
+        setIsConnected(true);
+        
+        // 2. Descubrir contenedores Modelscope
+        addLog('🔦 Buscando contenedores Modelscope...');
+        const containers = await orusProductionConnector.discoverModelscopeContainers();
+        addLog(`📦 Contenedores encontrados: ${containers.length}`);
+        
+        containers.forEach(container => {
+          addLog(`  - ${container.name} (${container.type}) en puerto ${container.port}`);
+        });
+        
+        // 3. Conectar con AnythingLLM
+        addLog('📚 Conectando con AnythingLLM...');
+        const anythingllmConnected = await orusProductionConnector.connectToAnythingLLM();
+        addLog(anythingllmConnected ? '✅ AnythingLLM conectado' : '⚠️ AnythingLLM no disponible');
+        
+        // 4. Probar conexión Realtime
+        addLog('🌐 Probando conexión Socket.IO...');
+        const realtimeConnected = await orusProductionConnector.testRealtimeConnection();
+        addLog(realtimeConnected ? '✅ Socket.IO conectado' : '⚠️ Socket.IO no disponible');
+        
+        // 5. Obtener estado completo
+        const status = await orusProductionConnector.getSystemStatus();
+        setSystemStatus(status);
+        
+        addLog('🎉 Conexión Production completada');
+        
+        // Mantener conexión con health checks
+        setTimeout(() => {
+          setIsLoading(false);
+          setIsScanning(false);
+        }, 3000);
+        
       } else {
         addLog('❌ Error conectando con ORUS Principal');
         setConnectionStatus('disconnected');
+        setIsConnected(false);
+        setIsLoading(false);
+        setIsScanning(false);
+        setIsBlackScreen(false);
       }
-      
-      // 2. Descubrir contenedores Modelscope
-      addLog('🔦 Buscando contenedores Modelscope...');
-      const containers = await orusProductionConnector.discoverModelscopeContainers();
-      addLog(`📦 Contenedores encontrados: ${containers.length}`);
-      
-      containers.forEach(container => {
-        addLog(`  - ${container.name} (${container.type}) en puerto ${container.port}`);
-      });
-      
-      // 3. Conectar con AnythingLLM
-      addLog('📚 Conectando con AnythingLLM...');
-      const anythingllmConnected = await orusProductionConnector.connectToAnythingLLM();
-      addLog(anythingllmConnected ? '✅ AnythingLLM conectado' : '⚠️ AnythingLLM no disponible');
-      
-      // 4. Probar conexión Realtime
-      addLog('🌐 Probando conexión Socket.IO...');
-      const realtimeConnected = await orusProductionConnector.testRealtimeConnection();
-      addLog(realtimeConnected ? '✅ Socket.IO conectado' : '⚠️ Socket.IO no disponible');
-      
-      // 5. Obtener estado completo
-      const status = await orusProductionConnector.getSystemStatus();
-      setSystemStatus(status);
-      
-      addLog('🎉 Conexión Production completada');
       
     } catch (error) {
       addLog(`❌ Error en conexión Production: ${error}`);
       console.error('Error:', error);
       setConnectionStatus('disconnected');
-    } finally {
+      setIsConnected(false);
       setIsLoading(false);
       setIsScanning(false);
+      setIsBlackScreen(false);
     }
   };
 
@@ -127,7 +143,19 @@ export default function ORUSProductionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+      {/* Black Screen Overlay */}
+      {isBlackScreen && (
+        <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="text-6xl animate-pulse">🔐</div>
+            <div className="text-2xl text-white">CONECTANDO CON ORUS PRODUCTION</div>
+            <div className="text-lg text-gray-400">Por favor, espere...</div>
+            <div className="w-16 h-1 bg-red-600 animate-pulse mx-auto"></div>
+          </div>
+        </div>
+      )}
+      
+      <div className={`max-w-7xl mx-auto space-y-8 ${isBlackScreen ? 'opacity-0' : ''}`}>
         
         {/* Header Production */}
         <div className="text-center space-y-4">
@@ -232,15 +260,15 @@ export default function ORUSProductionPage() {
                 className="w-full h-14 text-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     {isScanning ? 'CONECTANDO...' : 'PROCESANDO...'}
-                  </>
+                  </span>
                 ) : (
-                  <>
+                  <span className="flex items-center justify-center gap-2">
                     <Lock className="mr-3 h-6 w-6" />
                     CONECTAR ORUS PRODUCTION
-                  </>
+                  </span>
                 )}
               </Button>
 
@@ -320,7 +348,7 @@ export default function ORUSProductionPage() {
                   className="bg-orange-600 hover:bg-orange-700"
                 >
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     'Enviar'
                   )}

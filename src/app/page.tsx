@@ -130,7 +130,7 @@ export default function Home() {
           <div className="flex items-center justify-center gap-4">
             <span>📦 GitHub: teccia-z</span>
             <span>🌿 Branch: Oiko</span>
-            <span>🏷️ Version: v1.0.1</span>
+            <span>🏷️ Version: v1.1.0</span>
           </div>
         </div>
       </div>
