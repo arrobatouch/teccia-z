@@ -18,7 +18,8 @@ NC='\033[0m' # No Color
 # 📍 Variables de configuración
 SOURCE_DIR="/home/z/my-project/opt/modelscope-agent/mcp"
 PROD_DIR="/opt/modelscope-agent/mcp"
-BACKUP_DIR="/opt/modelscope-agent/mcp_backup_$(date +%Y%m%d_%H%M%S)"
+BACKUP_BASE_DIR="/opt/modelscope-agent/backups"
+BACKUP_DIR="$BACKUP_BASE_DIR/mcp_backup_$(date +%Y-%m-%d_%H-%M-%S)"
 LOG_FILE="/var/log/mcp_sync.log"
 
 # 🧠 Funciones de utilidad
@@ -66,13 +67,64 @@ check_production() {
 
 # 💾 Crear backup antes de sincronizar
 create_backup() {
-    if [[ -d "$PROD_DIR" ]] && [[ "$(ls -A $PROD_DIR 2>/dev/null)" ]]; then
-        log "🔄 Creando backup en: $BACKUP_DIR"
-        cp -r "$PROD_DIR" "$BACKUP_DIR"
-        log "✅ Backup creado exitosamente"
-    else
-        log "📁 Directorio de producción vacío, no se requiere backup"
+    log "🔄 Iniciando proceso de backup automático..."
+    
+    # Crear directorio base de backups si no existe
+    if [[ ! -d "$BACKUP_BASE_DIR" ]]; then
+        log "📁 Creando directorio base de backups: $BACKUP_BASE_DIR"
+        mkdir -p "$BACKUP_BASE_DIR"
+        chown root:root "$BACKUP_BASE_DIR"
+        chmod 755 "$BACKUP_BASE_DIR"
     fi
+    
+    # Verificar si hay contenido que respaldar
+    if [[ -d "$PROD_DIR" ]] && [[ "$(ls -A $PROD_DIR 2>/dev/null)" ]]; then
+        log "🔄 Creando backup completo en: $BACKUP_DIR"
+        
+        # Crear directorio de backup con timestamp
+        mkdir -p "$BACKUP_DIR"
+        
+        # Copiar todo el contenido de MCP al backup
+        cp -r "$PROD_DIR"/* "$BACKUP_DIR/" 2>/dev/null || {
+            error "Falló la copia de archivos al backup"
+            return 1
+        }
+        
+        # Verificar que el backup se haya creado correctamente
+        if [[ -d "$BACKUP_DIR" ]] && [[ "$(ls -A $BACKUP_DIR 2>/dev/null)" ]]; then
+            # Establecer permisos correctos en el backup
+            chown -R root:root "$BACKUP_DIR"
+            chmod -R 755 "$BACKUP_DIR"
+            
+            # Contar archivos respaldados
+            BACKUP_FILES=$(find "$BACKUP_DIR" -type f | wc -l)
+            BACKUP_DIRS=$(find "$BACKUP_DIR" -type d | wc -l)
+            
+            log "✅ Backup realizado correctamente en: $BACKUP_DIR"
+            log "📊 Estadísticas del backup: $BACKUP_DIRS directorios, $BACKUP_FILES archivos"
+            
+            # Registrar en log con formato específico
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] BACKUP_EXITOSO: $BACKUP_DIR ($BACKUP_FILES archivos)" >> "$LOG_FILE"
+            
+            # Mostrar espacio utilizado
+            BACKUP_SIZE=$(du -sh "$BACKUP_DIR" | cut -f1)
+            log "💾 Espacio utilizado por el backup: $BACKUP_SIZE"
+            
+        else
+            error "❌ Falló la creación del backup en: $BACKUP_DIR"
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR_BACKUP: Falló creación en $BACKUP_DIR" >> "$LOG_FILE"
+            return 1
+        fi
+    else
+        log "📁 Directorio de producción vacío o no existe, no se requiere backup"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO_BACKUP: Directorio vacío, no se requiere backup" >> "$LOG_FILE"
+    fi
+    
+    # Listar backups recientes (últimos 5)
+    log "📋 Backups recientes en $BACKUP_BASE_DIR:"
+    ls -la "$BACKUP_BASE_DIR" 2>/dev/null | grep "mcp_backup" | tail -5 | while read -r line; do
+        log "   📦 $line"
+    done
 }
 
 # 📦 Sincronizar módulos

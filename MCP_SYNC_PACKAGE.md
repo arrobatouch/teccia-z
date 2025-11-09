@@ -1,7 +1,52 @@
-# 📦 PAQUETE DE SINCRONIZACIÓN MCP A PRODUCCIÓN
+# 📦 PAQUETE DE SINCRONIZACIÓN MCP A PRODUCCIÓN v2.0.1
 
 ## 🎯 Objetivo
 Sincronizar los módulos MCP desarrollados localmente al entorno productivo de ORUS.
+
+## 🔄 MEJORAS v2.0.1 - SISTEMA DE BACKUP MEJORADO
+
+### 💾 Características de Backup Robusto
+- **Directorio dedicado**: `/opt/modelscope-agent/backups/`
+- **Timestamp específico**: `mcp_backup_YYYY-MM-DD_HH-MM-SS`
+- **Registro detallado**: Log específico en `/var/log/mcp_sync.log`
+- **Estadísticas completas**: Conteo de archivos y directorios
+- **Espacio utilizado**: Información del tamaño del backup
+- **Permisos seguros**: root:root con 755
+- **Historial de backups**: Lista de últimos 5 backups
+
+### 📋 Formato de Log de Backup
+```
+[2025-11-09 12:45:30] BACKUP_EXITOSO: /opt/modelscope-agent/backups/mcp_backup_2025-11-09_12-45-30 (15 archivos)
+[2025-11-09 12:45:31] INFO_BACKUP: Directorio vacío, no se requiere backup
+[2025-11-09 12:45:32] ERROR_BACKUP: Falló creación en /opt/modelscope-agent/backups/mcp_backup_2025-11-09_12-45-32
+```
+
+### 🔄 Proceso de Backup Automático
+1. **Verificación**: Directorio base de backups
+2. **Creación**: Directorio con timestamp único
+3. **Copia**: Todo el contenido de `/opt/modelscope-agent/mcp/`
+4. **Validación**: Verificación de integridad del backup
+5. **Registro**: Log detallado con formato específico
+6. **Estadísticas**: Archivos, directorios y espacio
+7. **Listado**: Backups recientes disponibles
+
+### 🚀 Proceso de Restauración
+Si algo falla durante la actualización:
+```bash
+# 1. Listar backups disponibles
+ls -la /opt/modelscope-agent/backups/
+
+# 2. Restaurar backup específico
+sudo rm -rf /opt/modelscope-agent/mcp/*
+sudo cp -r /opt/modelscope-agent/backups/mcp_backup_2025-11-09_12-45-30/* /opt/modelscope-agent/mcp/
+
+# 3. Ajustar permisos
+sudo chown -R root:root /opt/modelscope-agent/mcp/
+sudo chmod -R 755 /opt/modelscope-agent/mcp/
+
+# 4. Reiniciar servicios
+pm2 restart orus-modelscope
+```
 
 ## 📁 Archivos Creados
 
