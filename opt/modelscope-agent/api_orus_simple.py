@@ -30,6 +30,21 @@ class ORUSAPIHandler(BaseHTTPRequestHandler):
                 "status": "ok", 
                 "server_time": datetime.utcnow().isoformat() + "Z"
             })
+        elif self.path == '/logs':
+            # Simular análisis de logs para prueba
+            test_errors = [
+                "[test.log] ERROR: Connection refused to database server",
+                "[test.log] Exception: Null pointer exception in module X"
+            ]
+            
+            self.send_json_response({
+                "status": "ok",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "errors_found": test_errors,
+                "total_errors": len(test_errors),
+                "analyzed_files": ["test.log"],
+                "skipped_files": []
+            })
         else:
             self.send_error(404, "Endpoint no encontrado")
     
@@ -87,6 +102,7 @@ def run_server():
     print("   GET  /        - Estado del servidor")
     print("   GET  /health  - Health check")
     print("   GET  /time    - Hora actual")
+    print("   GET  /logs    - Análisis de logs")
     print("   POST /query   - Consultas a ORUS")
     print("⏹️  Presiona Ctrl+C para detener")
     print("=" * 50)
