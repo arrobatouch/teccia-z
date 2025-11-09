@@ -23,7 +23,9 @@ import {
   ArrowRight,
   Download,
   Play,
-  Settings
+  Settings,
+  GitBranch,
+  Rocket
 } from "lucide-react";
 
 interface Trabajo {
@@ -184,6 +186,55 @@ def get_logs_analysis():
     ],
     archivos: ['api_orus.py'],
     ruta: '/opt/modelscope-agent/'
+  },
+  {
+    id: 'versionado-automatico',
+    titulo: '🏷️ Sistema de Versionado Automático',
+    descripcion: 'Sistema profesional para versionado automático y publicación de releases en GitHub',
+    icono: GitBranch,
+    color: 'from-indigo-600 to-violet-600',
+    estado: 'completado',
+    funcionalidades: [
+      'Script automatizado para versionado semántico',
+      'Creación automática de commits y tags',
+      'Publicación directa a GitHub Releases',
+      'CHANGELOG.md dinámico y actualizado',
+      'Validación de código (ESLint) antes del release',
+      'Integración con GitHub CLI para releases automáticos'
+    ],
+    codigo: `#!/bin/bash
+# 🚀 TECCIA-Z Automatic Version Release Script
+
+VERSION="2.0.3"
+DESCRIPTION="Panel de Trabajos Realizados + Versionado Automático"
+
+# 1. Actualizar versiones
+npm version $VERSION --no-git-tag-version
+
+# 2. Crear commit
+git add .
+git commit -m "🚀 Release v$VERSION: $DESCRIPTION"
+
+# 3. Crear tag
+git tag -a v$VERSION -m "Versión $VERSION: $DESCRIPTION"
+
+# 4. Subir a GitHub
+git push origin main
+git push origin v$VERSION
+
+# 5. Crear GitHub Release
+gh release create v$VERSION \\
+    --title "🚀 TECCIA-Z v$VERSION" \\
+    --notes "$TAG_MESSAGE" \\
+    --target main`,
+    comandos: [
+      './version-release.sh 2.0.4 "Nueva funcionalidad X"',
+      './version-release.sh 2.1.0 "Major update con nuevas features"',
+      'git clone --branch v2.0.3 https://github.com/arrobatouch/teccia-z.git',
+      'wget https://github.com/arrobatouch/teccia-z/archive/refs/tags/v2.0.3.zip'
+    ],
+    archivos: ['version-release.sh', 'CHANGELOG.md', 'package.json'],
+    ruta: './'
   }
 ];
 
@@ -229,11 +280,11 @@ export default function TrabajosRealizadosPage() {
           <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
             <span className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              4 Módulos Completados
+              5 Módulos Completados
             </span>
             <span className="flex items-center gap-2">
               <Code className="w-4 h-4 text-blue-400" />
-              11 Archivos Funcionales
+              14 Archivos Funcionales
             </span>
             <span className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-purple-400" />
@@ -265,7 +316,7 @@ export default function TrabajosRealizadosPage() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {trabajos.map((trabajo) => {
                 const Icon = trabajo.icono;
                 return (
