@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, Server, Bot, ArrowRight, Shield, Lock, Database } from "lucide-react";
+import { Brain, Server, Bot, ArrowRight, Shield, Lock, Database, Code, CheckCircle } from "lucide-react";
 
 export default function Home() {
   return (
@@ -23,7 +23,39 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Trabajos Realizados - Nueva tarjeta */}
+          <Card className="border-2 border-purple-100 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Code className="h-6 w-6 text-purple-600" />
+                Trabajos Realizados
+              </CardTitle>
+              <CardDescription>
+                Visualiza todos los módulos desarrollados
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <CheckCircle className="h-6 w-6 text-purple-600" />
+                <div>
+                  <div className="font-medium text-sm">4 Módulos Listos</div>
+                  <div className="text-xs text-muted-foreground">100% Funcional</div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link href="/trabajos-realizados">
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                    <Code className="mr-2 h-4 w-4" />
+                    Ver Trabajos
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Demo Version */}
           <Card className="border-2 border-blue-100 shadow-lg">
             <CardHeader>
@@ -130,7 +162,7 @@ export default function Home() {
           <div className="flex items-center justify-center gap-4">
             <span>📦 GitHub: teccia-z</span>
             <span>🌿 Branch: Oiko</span>
-            <span>🏷️ Version: v2.0.2</span>
+            <span>🏷️ Version: v2.0.3</span>
           </div>
         </div>
       </div>
