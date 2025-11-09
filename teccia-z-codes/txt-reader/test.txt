@@ -1,0 +1,8 @@
+Este es un archivo de prueba para el lector TXT de ORUS.
+
+Contiene texto de ejemplo para validar que el sistema puede leer archivos .txt correctamente.
+
+El sistema ORUS debería poder procesar este contenido y extraer información relevante.
+
+Línea de prueba adicional.
+Fin del archivo.
