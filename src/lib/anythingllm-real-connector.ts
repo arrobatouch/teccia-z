@@ -18,6 +18,14 @@ class AnythingLLMRealConnector {
    */
   async testAuthentication(): Promise<boolean> {
     console.log('🔐 Testing AnythingLLM Authentication...');
+    console.log('🔗 Base URL:', this.baseUrl);
+    console.log('🔑 API Key:', this.apiKey ? `${this.apiKey.substring(0, 8)}...` : 'UNDEFINED');
+    
+    // Validate inputs
+    if (!this.apiKey || !this.baseUrl) {
+      console.error('❌ Missing API key or base URL');
+      return false;
+    }
     
     try {
       const response = await fetch(`${this.baseUrl}/api/v1/auth`, {
@@ -29,6 +37,7 @@ class AnythingLLMRealConnector {
       });
 
       console.log('📊 Auth Response Status:', response.status);
+      console.log('📊 Auth Response Headers:', Object.fromEntries(response.headers.entries()));
       
       if (response.ok) {
         const authData = await response.json();
@@ -37,10 +46,16 @@ class AnythingLLMRealConnector {
       } else {
         const errorData = await response.text();
         console.log('❌ Authentication failed:', response.status, errorData);
+        console.log('❌ Response URL:', response.url);
         return false;
       }
     } catch (error) {
       console.error('❌ Authentication error:', error);
+      console.error('❌ Error details:', {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        name: error instanceof Error ? error.name : undefined
+      });
       return false;
     }
   }

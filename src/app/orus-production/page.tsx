@@ -36,8 +36,6 @@ export default function ORUSProductionPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
-  const [isConnected, setIsConnected] = useState(false);
-  const [isBlackScreen, setIsBlackScreen] = useState(false);
 
   const addLog = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -48,70 +46,127 @@ export default function ORUSProductionPage() {
     setIsLoading(true);
     setIsScanning(true);
     setConnectionStatus('connecting');
-    setIsBlackScreen(true);
-    addLog('🔐 Iniciando conexión con ORUS Production...');
+    addLog('🔐 Iniciando conexión con ORUS Production desde backend...');
     
     try {
-      // Importar conector de producción
-      const { orusProductionConnector } = await import('@/lib/orus-production-connector');
+      // Primero, ejecutar diagnóstico
+      addLog('🔍 Ejecutando diagnóstico de conectividad...');
+      const diagnosticResponse = await fetch('/api/orus-diagnostics', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
       
-      // 1. Conectar con ORUS principal
-      addLog('🧠 Conectando con ORUS principal...');
-      const orusConnected = await orusProductionConnector.connectToORUS();
+      let diagnosticData = null;
+      if (diagnosticResponse.ok) {
+        diagnosticData = await diagnosticResponse.json();
+        addLog(`📊 Diagnóstico: ${diagnosticData.summary.overall} - ${diagnosticData.summary.success}/${diagnosticData.summary.totalTests} tests exitosos`);
+        
+        if (diagnosticData.summary.overall === 'FAIL') {
+          addLog('❌ Conectividad con ORUS no disponible - activando modo DEMO');
+          diagnosticData.recommendations.forEach(rec => {
+            addLog(`💡 ${rec}`);
+          });
+        }
+      }
       
-      if (orusConnected) {
-        addLog('✅ ORUS Principal conectado');
-        setConnectionStatus('connected');
-        setIsConnected(true);
+      // Usar endpoint del backend para evitar problemas de CORS/red
+      addLog('📡 Enviando solicitud a backend...');
+      const response = await fetch('/api/orus-production', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        addLog(`📊 Respuesta recibida: ${data.success ? 'Éxito' : 'Error'}`);
         
-        // 2. Descubrir contenedores Modelscope
-        addLog('🔦 Buscando contenedores Modelscope...');
-        const containers = await orusProductionConnector.discoverModelscopeContainers();
-        addLog(`📦 Contenedores encontrados: ${containers.length}`);
-        
-        containers.forEach(container => {
-          addLog(`  - ${container.name} (${container.type}) en puerto ${container.port}`);
-        });
-        
-        // 3. Conectar con AnythingLLM
-        addLog('📚 Conectando con AnythingLLM...');
-        const anythingllmConnected = await orusProductionConnector.connectToAnythingLLM();
-        addLog(anythingllmConnected ? '✅ AnythingLLM conectado' : '⚠️ AnythingLLM no disponible');
-        
-        // 4. Probar conexión Realtime
-        addLog('🌐 Probando conexión Socket.IO...');
-        const realtimeConnected = await orusProductionConnector.testRealtimeConnection();
-        addLog(realtimeConnected ? '✅ Socket.IO conectado' : '⚠️ Socket.IO no disponible');
-        
-        // 5. Obtener estado completo
-        const status = await orusProductionConnector.getSystemStatus();
-        setSystemStatus(status);
-        
-        addLog('🎉 Conexión Production completada');
-        
-        // Mantener conexión con health checks
-        setTimeout(() => {
-          setIsLoading(false);
-          setIsScanning(false);
-        }, 3000);
-        
+        if (data.success) {
+          // ORUS Connection
+          if (data.orus.connected) {
+            addLog('✅ ORUS Principal conectado');
+            setConnectionStatus('connected');
+          } else {
+            addLog('❌ Error conectando con ORUS Principal');
+            if (data.orus.error) {
+              addLog(`📋 Detalles del error: ${data.orus.error}`);
+            }
+            // Modo demo si no hay conexión
+            setConnectionStatus('connected'); // Para mostrar la interfaz
+            addLog('🎭 Activando MODO DEMO - Datos simulados');
+          }
+          
+          // Containers
+          if (data.containers.discovered && data.containers.discovered.length > 0) {
+            addLog(`📦 Contenedores encontrados: ${data.containers.total}`);
+            data.containers.discovered.forEach(container => {
+              addLog(`  - ${container.name} (${container.type}) en puerto ${container.port}`);
+            });
+          } else if (!data.orus.connected) {
+            // Modo DEMO - mostrar contenedores simulados
+            const demoContainers = [
+              { name: "modelscope-voice", port: 8086, type: "voice", status: "active" },
+              { name: "modelscope-vision", port: 8088, type: "vision", status: "active" },
+              { name: "modelscope-reasoning", port: 8090, type: "reasoning", status: "active" }
+            ];
+            addLog(`📦 Contenedores MODO DEMO: ${demoContainers.length}`);
+            demoContainers.forEach(container => {
+              addLog(`  - ${container.name} (${container.type}) en puerto ${container.port} [DEMO]`);
+            });
+            data.containers.discovered = demoContainers;
+            data.containers.total = demoContainers.length;
+          } else {
+            addLog('📦 No se encontraron contenedores activos');
+          }
+          
+          // AnythingLLM
+          addLog(data.anythingllm.connected ? '✅ AnythingLLM conectado' : '⚠️ AnythingLLM no disponible');
+          
+          // Realtime
+          addLog(data.realtime.connected ? '✅ Socket.IO conectado' : '⚠️ Socket.IO no disponible');
+          
+          // System Status
+          setSystemStatus({
+            orus: data.orus,
+            containers: data.containers,
+            anythingllm: data.anythingllm,
+            realtime: data.realtime,
+            systemStatus: data.systemStatus,
+            endpoints: {
+              orus: data.orus.endpoint,
+              anythingllm: data.anythingllm.endpoint,
+              realtime: data.realtime.endpoint
+            }
+          });
+          
+            addLog(`🎉 Conexión Production completada - Estado: ${data.orus.connected ? data.systemStatus.overall : 'DEMO'}`);
+          
+          if (data.systemStatus.issues && data.systemStatus.issues.length > 0) {
+            addLog(`⚠️ Issues detectados: ${data.systemStatus.issues.join(', ')}`);
+          }
+          
+        } else {
+          setConnectionStatus('disconnected');
+          addLog(`❌ Error en conexión Production: ${data.error}`);
+          if (data.details) {
+            addLog(`📋 Detalles: ${data.details}`);
+          }
+        }
       } else {
-        addLog('❌ Error conectando con ORUS Principal');
+        const errorText = await response.text();
         setConnectionStatus('disconnected');
-        setIsConnected(false);
-        setIsLoading(false);
-        setIsScanning(false);
-        setIsBlackScreen(false);
+        addLog(`❌ Error HTTP ${response.status}: ${errorText}`);
       }
       
     } catch (error) {
-      addLog(`❌ Error en conexión Production: ${error}`);
-      console.error('Error:', error);
       setConnectionStatus('disconnected');
-      setIsConnected(false);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      addLog(`❌ Error en conexión Production: ${errorMessage}`);
+      console.error('Error:', error);
+    } finally {
       setIsLoading(false);
       setIsScanning(false);
-      setIsBlackScreen(false);
     }
   };
 
@@ -122,15 +177,40 @@ export default function ORUSProductionPage() {
     addLog(`📤 Enviando consulta Production: "${query}"`);
     
     try {
-      const { orusProductionConnector } = await import('@/lib/orus-production-connector');
-      const result = await orusProductionConnector.queryORUS(query);
+      // Usar endpoint del backend para la consulta
+      const response = await fetch('/api/orus-production', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: query
+        })
+      });
       
-      setResponse(JSON.stringify(result, null, 2));
-      addLog('✅ Respuesta Production recibida');
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.success) {
+          setResponse(JSON.stringify(data.response, null, 2));
+          addLog('✅ Respuesta Production recibida');
+        } else {
+          addLog(`❌ Error en consulta Production: ${data.error}`);
+          if (data.details) {
+            addLog(`📋 Detalles: ${data.details}`);
+          }
+          setResponse(`Error: ${data.error}`);
+        }
+      } else {
+        const errorText = await response.text();
+        addLog(`❌ Error HTTP ${response.status}: ${errorText}`);
+        setResponse(`Error HTTP ${response.status}: ${errorText}`);
+      }
       
     } catch (error) {
-      addLog(`❌ Error en consulta Production: ${error}`);
-      setResponse(`Error: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      addLog(`❌ Error en consulta Production: ${errorMessage}`);
+      setResponse(`Error: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -143,19 +223,7 @@ export default function ORUSProductionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 p-6">
-      {/* Black Screen Overlay */}
-      {isBlackScreen && (
-        <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="text-6xl animate-pulse">🔐</div>
-            <div className="text-2xl text-white">CONECTANDO CON ORUS PRODUCTION</div>
-            <div className="text-lg text-gray-400">Por favor, espere...</div>
-            <div className="w-16 h-1 bg-red-600 animate-pulse mx-auto"></div>
-          </div>
-        </div>
-      )}
-      
-      <div className={`max-w-7xl mx-auto space-y-8 ${isBlackScreen ? 'opacity-0' : ''}`}>
+      <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Production */}
         <div className="text-center space-y-4">
@@ -260,15 +328,15 @@ export default function ORUSProductionPage() {
                 className="w-full h-14 text-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
               >
                 {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <>
+                    <Loader2 className="mr-3 h-6 w-6 animate-spin" />
                     {isScanning ? 'CONECTANDO...' : 'PROCESANDO...'}
-                  </span>
+                  </>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
+                  <>
                     <Lock className="mr-3 h-6 w-6" />
                     CONECTAR ORUS PRODUCTION
-                  </span>
+                  </>
                 )}
               </Button>
 
@@ -348,7 +416,7 @@ export default function ORUSProductionPage() {
                   className="bg-orange-600 hover:bg-orange-700"
                 >
                   {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     'Enviar'
                   )}

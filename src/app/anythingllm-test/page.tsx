@@ -49,40 +49,64 @@ export default function AnythingLLMTestPage() {
   const testAnythingLLMConnection = async () => {
     setIsLoading(true);
     setAuthStatus('connecting');
-    addLog('🔐 Iniciando conexión con AnythingLLM...');
+    addLog('🔐 Iniciando conexión con AnythingLLM desde backend...');
     
     try {
-      // Importar el conector real
-      const { anythingLLMRealConnector } = await import('@/lib/anythingllm-real-connector');
+      // Usar endpoint del backend para evitar problemas de CORS/red
+      addLog('📡 Enviando solicitud a backend...');
+      const response = await fetch('/api/anythingllm-test', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       
-      // 1. Probar autenticación
-      addLog('🔑 Probando autenticación...');
-      const authSuccess = await anythingLLMRealConnector.testAuthentication();
-      
-      if (authSuccess) {
-        setAuthStatus('connected');
-        addLog('✅ Autenticación exitosa con AnythingLLM');
+      if (response.ok) {
+        const data = await response.json();
+        addLog(`📊 Respuesta recibida: ${data.success ? 'Éxito' : 'Error'} - Auth: ${data.auth ? 'OK' : 'FAIL'}`);
         
-        // 2. Obtener workspaces
-        addLog('📚 Obteniendo workspaces disponibles...');
-        const workspaceList = await anythingLLMRealConnector.getWorkspaces();
-        setWorkspaces(workspaceList);
-        addLog(`📦 Se encontraron ${workspaceList.length} workspaces`);
-        
-        // 3. Obtener información del sistema
-        addLog('🖥️ Obteniendo información del sistema...');
-        const sysInfo = await anythingLLMRealConnector.getSystemInfo();
-        setSystemInfo(sysInfo);
-        addLog('✅ Información del sistema obtenida');
-        
+        if (data.success) {
+          setAuthStatus('connected');
+          addLog('✅ Autenticación exitosa con AnythingLLM');
+          
+          // Procesar workspaces - pueden venir en data.workspaces.workspaces o data.workspaces
+          let workspaceList = [];
+          if (data.workspaces && data.workspaces.workspaces) {
+            workspaceList = data.workspaces.workspaces;
+          } else if (data.workspaces && Array.isArray(data.workspaces)) {
+            workspaceList = data.workspaces;
+          }
+          
+          if (workspaceList.length > 0) {
+            setWorkspaces(workspaceList);
+            addLog(`📦 Se encontraron ${workspaceList.length} workspaces`);
+          }
+          
+          setSystemInfo({
+            auth: data.auth,
+            baseUrl: data.baseUrl,
+            apiKeyPrefix: data.apiKeyPrefix,
+            totalWorkspaces: workspaceList.length
+          });
+          addLog('✅ Información del sistema obtenida');
+          
+        } else {
+          setAuthStatus('disconnected');
+          addLog(`❌ Error en conexión: ${data.error}`);
+          if (data.details) {
+            addLog(`📋 Detalles: ${data.details}`);
+          }
+        }
       } else {
+        const errorText = await response.text();
         setAuthStatus('disconnected');
-        addLog('❌ Error en autenticación con AnythingLLM');
+        addLog(`❌ Error HTTP ${response.status}: ${errorText}`);
       }
       
     } catch (error) {
       setAuthStatus('disconnected');
-      addLog(`❌ Error en conexión: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      addLog(`❌ Error en conexión: ${errorMessage}`);
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
@@ -96,20 +120,41 @@ export default function AnythingLLMTestPage() {
     addLog(`💬 Enviando mensaje a workspace "${selectedWorkspace}": "${chatMessage}"`);
     
     try {
-      const { anythingLLMRealConnector } = await import('@/lib/anythingllm-real-connector');
-      const response = await anythingLLMRealConnector.sendChatMessage(selectedWorkspace, chatMessage);
+      // Usar endpoint del backend para el chat
+      const response = await fetch('/api/anythingllm-test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          workspaceSlug: selectedWorkspace,
+          message: chatMessage
+        })
+      });
       
-      if (response.error) {
-        addLog(`❌ Error en chat: ${response.message}`);
-        setChatResponse(`Error: ${response.message}`);
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.success) {
+          addLog('✅ Respuesta recibida de AnythingLLM');
+          setChatResponse(JSON.stringify(data.response, null, 2));
+        } else {
+          addLog(`❌ Error en chat: ${data.error}`);
+          if (data.details) {
+            addLog(`📋 Detalles: ${data.details}`);
+          }
+          setChatResponse(`Error: ${data.error}`);
+        }
       } else {
-        addLog('✅ Respuesta recibida de AnythingLLM');
-        setChatResponse(JSON.stringify(response, null, 2));
+        const errorText = await response.text();
+        addLog(`❌ Error HTTP ${response.status}: ${errorText}`);
+        setChatResponse(`Error HTTP ${response.status}: ${errorText}`);
       }
       
     } catch (error) {
-      addLog(`❌ Error enviando mensaje: ${error}`);
-      setChatResponse(`Error: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      addLog(`❌ Error enviando mensaje: ${errorMessage}`);
+      setChatResponse(`Error: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }

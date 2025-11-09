@@ -250,7 +250,7 @@ export default function ORUSConnectionPage() {
         <div className="text-center text-sm text-gray-400 space-y-1">
           <p>🧠 ORUS - Agente Cognitivo Multimodal | Arquitectura Distribuida</p>
           <p>🔧 Modelscope - Contenedores Especializados | 📚 AnythingLLM - Memoria Central</p>
-          <p className="text-xs text-gray-500">Panel de Control v1.1.0 - Demostración Visual</p>
+          <p className="text-xs text-gray-500">Panel de Control v1.0 - Demostración Visual</p>
         </div>
       </div>
     </div>
