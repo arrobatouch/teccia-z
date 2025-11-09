@@ -1,0 +1,11 @@
+Este es un archivo de prueba para el lector de TXT.
+
+Contiene múltiples líneas y caracteres especiales: áéíóú ñ.
+
+El objetivo es probar que el módulo reader_txt.py funciona correctamente
+leyendo archivos de texto plano.
+
+Línea 4: Probando el límite de 1000 caracteres...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Fin del archivo de prueba.
