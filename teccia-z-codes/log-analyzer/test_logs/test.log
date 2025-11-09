@@ -1,0 +1,13 @@
+2025-11-09T23:10:15.123Z INFO: Sistema ORUS iniciado correctamente
+2025-11-09T23:10:16.456Z INFO: Conectando a base de datos
+2025-11-09T23:10:17.789Z ERROR: Connection refused to database server
+2025-11-09T23:10:18.012Z WARNING: Reintentando conexión en 5 segundos
+2025-11-09T23:10:23.345Z INFO: Reconexión exitosa
+2025-11-09T23:10:24.678Z DEBUG: Procesando solicitud del cliente
+2025-11-09T23:10:25.901Z Exception: Null pointer exception in module X
+2025-11-09T23:10:26.234Z ERROR: Failed to process request
+2025-11-09T23:10:27.567Z INFO: Sistema recuperado
+2025-11-09T23:10:28.890Z Traceback: Traceback (most recent call last):
+2025-11-09T23:10:29.123Z   File "/opt/modelscope-agent/main.py", line 42
+2025-11-09T23:10:30.456Z Connection reset by peer
+2025-11-09T23:10:31.789Z INFO: Servidor funcionando normalmente
