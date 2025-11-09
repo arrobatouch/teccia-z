@@ -260,8 +260,8 @@ export default function TrabajosRealizadosPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4">
+        <div className="text-left space-y-4">
+          <div className="flex items-center justify-start gap-4">
             <div className="text-6xl animate-pulse">🎯</div>
             <div className="flex gap-2">
               <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
@@ -277,7 +277,7 @@ export default function TrabajosRealizadosPage() {
             Módulos y sistemas desarrollados para el ecosistema TECCIA-Z ORUS
           </p>
           
-          <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
+          <div className="flex items-center justify-start gap-6 text-sm text-gray-400">
             <span className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-green-400" />
               5 Módulos Completados

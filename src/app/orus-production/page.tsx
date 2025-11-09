@@ -226,8 +226,8 @@ export default function ORUSProductionPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Production */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4">
+        <div className="text-left space-y-4">
+          <div className="flex items-center justify-start gap-4">
             <div className={`text-6xl ${isScanning ? 'animate-bounce' : ''}`}>🔐</div>
             <div className="flex gap-2">
               <div className="w-4 h-4 bg-red-400 rounded-full animate-pulse"></div>
@@ -243,7 +243,7 @@ export default function ORUSProductionPage() {
             Panel de control Production - Conexión real con ORUS
           </p>
           
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-start gap-2">
             <Lock className="h-4 w-4 text-red-400" />
             <span className="text-red-400 text-sm">Sistema Production Seguro</span>
           </div>

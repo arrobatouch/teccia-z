@@ -501,8 +501,8 @@ Estoy listo para ayudarte con cualquier consulta adicional sobre el sistema TECC
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4">
+        <div className="text-left space-y-4">
+          <div className="flex items-center justify-start gap-4">
             <div className="text-6xl animate-pulse">🧠</div>
             <div className="flex gap-2">
               <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>

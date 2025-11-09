@@ -27,13 +27,12 @@ export default function Home() {
           {/* Trabajos Realizados - Restaurar tarjeta */}
           <Card className="border-2 border-purple-100 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
             <CardHeader>
-              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2">
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
                 <Code className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
-                <span className="hidden xs:inline sm:inline">Trabajos Realizados</span>
-                <span className="xs:hidden">Trabajos</span>
+                Módulos Desarrollados
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Visualiza todos los módulos desarrollados
+                Visualiza todos los módulos del sistema desarrollados
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
@@ -61,13 +60,12 @@ export default function Home() {
           {/* ORUS Direct Connection */}
           <Card className="border-2 border-blue-100 shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
             <CardHeader>
-              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2">
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
                 <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
-                <span className="hidden xs:inline sm:inline">ORUS Direct Chat</span>
-                <span className="xs:hidden">Chat ORUS</span>
+                Chat con Asistente IA
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Conexión directa para chatear con ORUS Production
+                Conecta directamente con el asistente de IA ORUS
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
@@ -95,13 +93,12 @@ export default function Home() {
           {/* AnythingLLM Test */}
           <Card className="border-2 border-green-100 shadow-lg bg-gradient-to-br from-green-50 to-blue-50">
             <CardHeader>
-              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2">
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
                 <Database className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
-                <span className="hidden xs:inline sm:inline">AnythingLLM Test</span>
-                <span className="xs:hidden">AnythingLLM</span>
+                Base de Datos IA
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Conexión real con AnythingLLM
+                Accede a la base de conocimientos de IA
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
@@ -130,13 +127,12 @@ export default function Home() {
           {/* Production Version */}
           <Card className="border-2 border-red-100 shadow-lg bg-gradient-to-br from-red-50 to-orange-50">
             <CardHeader>
-              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2">
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
                 <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
-                <span className="hidden xs:inline sm:inline">ORUS Production</span>
-                <span className="xs:hidden">Production</span>
+                Sistema en Producción
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Conexión real con ORUS production
+                Control y monitoreo del sistema en producción
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
@@ -163,7 +159,7 @@ export default function Home() {
           </Card>
         </div>
 
-        <div className="text-center text-xs sm:text-sm text-gray-400 space-y-2 border-t border-slate-700 pt-4 sm:pt-6">
+        <div className="text-left text-xs sm:text-sm text-gray-400 space-y-2 border-t border-slate-700 pt-4 sm:pt-6">
           <p className="hidden xs:block">🧠 TECCIA-Z Development Team | ORUS ModelScope Agent Integration | 🎯 Chat ORUS 2 Columnas</p>
           <p className="xs:hidden">🧠 TECCIA-Z | ORUS Integration | 🎯 Chat ORUS 2 Columnas</p>
           <p>📦 Versión 2.0.4 | 🚀 5 Módulos Operativos | 🔧 14 Archivos Funcionales | 🎯 Chat ORUS 2 Columnas</p>
