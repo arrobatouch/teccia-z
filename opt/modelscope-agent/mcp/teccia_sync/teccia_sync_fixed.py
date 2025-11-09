@@ -191,7 +191,7 @@ class TECCIAZSync:
             }
         }
     
-    def sync_github_data_to_tec cia(self) -> Dict[str, Any]:
+    def sync_github_data(self) -> Dict[str, Any]:
         """
         Sincronizar datos de GitHub con TECCIA-Z
         
@@ -349,7 +349,7 @@ def main():
     
     # Sincronizar datos de GitHub
     print("\n🔄 Sincronizando datos de GitHub con TECCIA-Z...")
-    sync_result = sync.sync_github_data_to_tec cia()
+    sync_result = sync.sync_github_data()
     print(f"Resultado: {json.dumps(sync_result, indent=2)}")
 
 if __name__ == "__main__":

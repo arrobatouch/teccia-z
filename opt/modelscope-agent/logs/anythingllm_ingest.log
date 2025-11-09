@@ -4,12 +4,3 @@
 2025-11-09 18:58:19,521 - INFO - ✅ Test de conexión con AnythingLLM exitoso
 2025-11-09 18:58:19,521 - INFO - Enviando contenido a AnythingLLM - Source: ORUS Log Analyzer, Length: 347 chars
 2025-11-09 18:58:20,500 - INFO - ✅ Éxito: Contenido enviado a AnythingLLM - 347 caracteres
-2025-11-09 19:07:26,926 - INFO - Conector AnythingLLM inicializado - URL: https://orus.teccia.com.ar
-2025-11-09 19:07:26,926 - INFO - Enviando contenido a AnythingLLM - Source: ORUS Connection Test, Length: 67 chars
-2025-11-09 19:07:27,617 - INFO - ✅ Éxito: Contenido enviado a AnythingLLM - 67 caracteres
-2025-11-09 19:07:27,618 - INFO - ✅ Test de conexión con AnythingLLM exitoso
-2025-11-09 19:07:27,622 - INFO - Conector GitHub inicializado - Repo: arrobatouch/teccia-z
-2025-11-09 19:07:27,622 - INFO - Probando conexión con GitHub API...
-2025-11-09 19:07:28,084 - INFO - ✅ Conexión exitosa con repo: arrobatouch/teccia-z
-2025-11-09 19:07:28,089 - INFO - Sincronizador TECCIA-Z inicializado - URL: https://panel.teccia.com.ar
-2025-11-09 19:07:28,089 - INFO - ✅ Cargados 2 registros desde GitHub sync
