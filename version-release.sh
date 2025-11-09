@@ -27,8 +27,8 @@ echo ""
 
 # Verificar si estamos en la rama correcta
 CURRENT_BRANCH=$(git branch --show-current)
-if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "Oiko" ]; then
-    echo -e "${RED}❌ Error: Debes estar en la rama 'main' o 'Oiko'${NC}"
+if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "Oiko" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+    echo -e "${RED}❌ Error: Debes estar en la rama 'main', 'Oiko' o 'master'${NC}"
     echo -e "${RED}   Rama actual: $CURRENT_BRANCH${NC}"
     exit 1
 fi
