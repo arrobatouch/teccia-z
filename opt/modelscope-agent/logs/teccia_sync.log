@@ -1,0 +1,16 @@
+2025-11-09 19:03:52,714 - INFO - Sincronizador TECCIA-Z inicializado - URL: https://panel.teccia.com.ar
+2025-11-09 19:03:52,714 - INFO - Probando conexión con TECCIA-Z API...
+2025-11-09 19:03:52,714 - INFO - Enviando a TECCIA-Z API: https://panel.teccia.com.ar/api/trabajos/import
+2025-11-09 19:03:54,059 - ERROR - ❌ Error HTTP con TECCIA-Z: Error HTTP 503: Service Unavailable
+2025-11-09 19:03:54,060 - ERROR - ❌ Test de conexión con TECCIA-Z fallido: Error HTTP 503: Service Unavailable
+2025-11-09 19:03:54,061 - INFO - ✅ Cargados 2 registros desde GitHub sync
+2025-11-09 19:03:54,061 - INFO - Iniciando sincronización de datos GitHub con TECCIA-Z
+2025-11-09 19:03:54,061 - INFO - ✅ Cargados 2 registros desde GitHub sync
+2025-11-09 19:03:54,061 - INFO - Procesando sincronización para: README.md
+2025-11-09 19:03:54,061 - INFO - Enviando a TECCIA-Z API: https://panel.teccia.com.ar/api/trabajos/import
+2025-11-09 19:03:55,432 - ERROR - ❌ Error HTTP con TECCIA-Z: Error HTTP 503: Service Unavailable
+2025-11-09 19:03:55,433 - ERROR - ❌ Error sincronizando README.md: Error HTTP 503: Service Unavailable
+2025-11-09 19:03:55,434 - INFO - Procesando sincronización para: CHANGELOG.md
+2025-11-09 19:03:55,434 - INFO - Enviando a TECCIA-Z API: https://panel.teccia.com.ar/api/trabajos/import
+2025-11-09 19:03:56,825 - ERROR - ❌ Error HTTP con TECCIA-Z: Error HTTP 503: Service Unavailable
+2025-11-09 19:03:56,827 - ERROR - ❌ Error sincronizando CHANGELOG.md: Error HTTP 503: Service Unavailable

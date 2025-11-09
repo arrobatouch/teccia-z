@@ -165,8 +165,8 @@ export default function AnythingLLMTestPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4">
+        <div className="text-left space-y-4">
+          <div className="flex items-center justify-start gap-4">
             <div className="text-6xl">📚</div>
             <div className="flex gap-2">
               <div className={`w-4 h-4 rounded-full animate-pulse ${
@@ -183,7 +183,7 @@ export default function AnythingLLMTestPage() {
             Conexión real con AnythingLLM usando API Key
           </p>
           
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-start gap-2">
             <Lock className="h-4 w-4 text-green-400" />
             <span className="text-green-400 text-sm">API Key: HHNP18V-MRK4BT0-KS8T24F-9ZNMA2N</span>
           </div>
@@ -401,7 +401,7 @@ export default function AnythingLLMTestPage() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center text-sm text-gray-400 space-y-1">
+        <div className="text-left text-sm text-gray-400 space-y-1">
           <p>📚 AnythingLLM Real Connection - TECCIA-Z</p>
           <p>🔐 API Key: HHNP18V-MRK4BT0-KS8T24F-9ZNMA2N</p>
           <p>🌐 Endpoint: https://orus.teccia.com.ar</p>

@@ -1,0 +1,21 @@
+2025-11-09 18:59:02,745 - INFO - Conector GitHub inicializado - Repo: arrobatouch/teccia-z
+2025-11-09 18:59:02,745 - INFO - Probando conexión con GitHub API...
+2025-11-09 18:59:02,746 - INFO - Solicitando a GitHub API: https://api.github.com/repos/arrobatouch/teccia-z/contents/
+2025-11-09 18:59:03,418 - INFO - ✅ Petición exitosa a GitHub: 
+2025-11-09 18:59:11,410 - INFO - Conector GitHub inicializado - Repo: arrobatouch/teccia-z
+2025-11-09 18:59:11,410 - INFO - Probando conexión con GitHub API...
+2025-11-09 18:59:12,342 - INFO - ✅ Conexión exitosa con repo: arrobatouch/teccia-z
+2025-11-09 18:59:12,342 - INFO - Procesando archivo: README.md
+2025-11-09 18:59:12,342 - INFO - Leyendo archivo: README.md
+2025-11-09 18:59:12,342 - INFO - Solicitando a GitHub API: https://api.github.com/repos/arrobatouch/teccia-z/contents/README.md
+2025-11-09 18:59:12,778 - INFO - ✅ Petición exitosa a GitHub: README.md
+2025-11-09 18:59:12,778 - INFO - Analizando contenido README con ORUS
+2025-11-09 18:59:12,779 - INFO - ✅ Datos guardados en /home/z/my-project/opt/modelscope-agent/data/github_sync.json
+2025-11-09 18:59:12,779 - INFO - ✅ Archivo procesado exitosamente: README.md
+2025-11-09 18:59:12,779 - INFO - Procesando archivo: CHANGELOG.md
+2025-11-09 18:59:12,779 - INFO - Leyendo archivo: CHANGELOG.md
+2025-11-09 18:59:12,779 - INFO - Solicitando a GitHub API: https://api.github.com/repos/arrobatouch/teccia-z/contents/CHANGELOG.md
+2025-11-09 18:59:13,663 - INFO - ✅ Petición exitosa a GitHub: CHANGELOG.md
+2025-11-09 18:59:13,663 - INFO - Analizando contenido CHANGELOG con ORUS
+2025-11-09 18:59:13,664 - INFO - ✅ Datos guardados en /home/z/my-project/opt/modelscope-agent/data/github_sync.json
+2025-11-09 18:59:13,664 - INFO - ✅ Archivo procesado exitosamente: CHANGELOG.md
