@@ -49,6 +49,26 @@ export default function ORUSProductionPage() {
     addLog('🔐 Iniciando conexión con ORUS Production desde backend...');
     
     try {
+      // Primero, ejecutar diagnóstico
+      addLog('🔍 Ejecutando diagnóstico de conectividad...');
+      const diagnosticResponse = await fetch('/api/orus-diagnostics', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      let diagnosticData = null;
+      if (diagnosticResponse.ok) {
+        diagnosticData = await diagnosticResponse.json();
+        addLog(`📊 Diagnóstico: ${diagnosticData.summary.overall} - ${diagnosticData.summary.success}/${diagnosticData.summary.totalTests} tests exitosos`);
+        
+        if (diagnosticData.summary.overall === 'FAIL') {
+          addLog('❌ Conectividad con ORUS no disponible - activando modo DEMO');
+          diagnosticData.recommendations.forEach(rec => {
+            addLog(`💡 ${rec}`);
+          });
+        }
+      }
+      
       // Usar endpoint del backend para evitar problemas de CORS/red
       addLog('📡 Enviando solicitud a backend...');
       const response = await fetch('/api/orus-production', {
@@ -69,7 +89,12 @@ export default function ORUSProductionPage() {
             setConnectionStatus('connected');
           } else {
             addLog('❌ Error conectando con ORUS Principal');
-            setConnectionStatus('disconnected');
+            if (data.orus.error) {
+              addLog(`📋 Detalles del error: ${data.orus.error}`);
+            }
+            // Modo demo si no hay conexión
+            setConnectionStatus('connected'); // Para mostrar la interfaz
+            addLog('🎭 Activando MODO DEMO - Datos simulados');
           }
           
           // Containers
@@ -78,6 +103,19 @@ export default function ORUSProductionPage() {
             data.containers.discovered.forEach(container => {
               addLog(`  - ${container.name} (${container.type}) en puerto ${container.port}`);
             });
+          } else if (!data.orus.connected) {
+            // Modo DEMO - mostrar contenedores simulados
+            const demoContainers = [
+              { name: "modelscope-voice", port: 8086, type: "voice", status: "active" },
+              { name: "modelscope-vision", port: 8088, type: "vision", status: "active" },
+              { name: "modelscope-reasoning", port: 8090, type: "reasoning", status: "active" }
+            ];
+            addLog(`📦 Contenedores MODO DEMO: ${demoContainers.length}`);
+            demoContainers.forEach(container => {
+              addLog(`  - ${container.name} (${container.type}) en puerto ${container.port} [DEMO]`);
+            });
+            data.containers.discovered = demoContainers;
+            data.containers.total = demoContainers.length;
           } else {
             addLog('📦 No se encontraron contenedores activos');
           }
@@ -102,7 +140,11 @@ export default function ORUSProductionPage() {
             }
           });
           
-          addLog(`🎉 Conexión Production completada - Estado: ${data.systemStatus.overall}`);
+            addLog(`🎉 Conexión Production completada - Estado: ${data.orus.connected ? data.systemStatus.overall : 'DEMO'}`);
+          
+          if (data.systemStatus.issues && data.systemStatus.issues.length > 0) {
+            addLog(`⚠️ Issues detectados: ${data.systemStatus.issues.join(', ')}`);
+          }
           
         } else {
           setConnectionStatus('disconnected');

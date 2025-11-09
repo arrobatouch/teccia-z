@@ -18,27 +18,52 @@ export async function GET() {
   try {
     // 1. Test ORUS main connection
     console.log('🧠 Connecting to ORUS Production...');
-    const orusResponse = await fetch(`${ORUS_ENDPOINT}/query`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: "ORUS, sistema TECCIA-Z solicitando conexión. Estado del sistema.",
-        source: "TECCIA-Z Control Panel",
-        timestamp: new Date().toISOString()
-      })
-    });
-
+    console.log('🌐 Target:', ORUS_ENDPOINT);
+    
     let orusConnected = false;
     let orusResponseData = null;
+    let orusError = null;
+    
+    try {
+      const orusResponse = await fetch(`${ORUS_ENDPOINT}/query`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: "ORUS, sistema TECCIA-Z solicitando conexión. Estado del sistema.",
+          source: "TECCIA-Z Control Panel",
+          timestamp: new Date().toISOString()
+        }),
+        // Timeout más largo para conexiones lentas
+        signal: AbortSignal.timeout(10000)
+      });
 
-    if (orusResponse.ok) {
-      orusResponseData = await orusResponse.json();
-      console.log('✅ ORUS Production Connection Successful:', orusResponseData);
-      orusConnected = true;
-    } else {
-      console.log('❌ ORUS Production Connection Failed:', orusResponse.status, orusResponse.statusText);
+      if (orusResponse.ok) {
+        orusResponseData = await orusResponse.json();
+        console.log('✅ ORUS Production Connection Successful:', orusResponseData);
+        orusConnected = true;
+      } else {
+        orusError = `HTTP ${orusResponse.status}: ${orusResponse.statusText}`;
+        console.log('❌ ORUS Production Connection Failed:', orusError);
+      }
+    } catch (fetchError) {
+      orusError = fetchError instanceof Error ? fetchError.message : String(fetchError);
+      console.log('❌ ORUS Production Fetch Error:', orusError);
+      
+      // Si es ECONNREFUSED, probar con un ping simple
+      if (orusError.includes('ECONNREFUSED') || orusError.includes('ENOTFOUND')) {
+        console.log('🔍 Testing basic connectivity to ORUS server...');
+        try {
+          const pingResponse = await fetch(`${ORUS_ENDPOINT.replace(':8085', ':8085')}/health`, {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
+          });
+          console.log('📡 ORUS Health Check Status:', pingResponse.status);
+        } catch (healthError) {
+          console.log('❌ ORUS Health Check Failed:', healthError);
+        }
+      }
     }
 
     // 2. Discover Modelscope containers
@@ -116,7 +141,8 @@ export async function GET() {
       orus: {
         connected: orusConnected,
         endpoint: ORUS_ENDPOINT,
-        response: orusResponseData
+        response: orusResponseData,
+        error: orusError
       },
       containers: {
         discovered: discovered,
@@ -131,8 +157,10 @@ export async function GET() {
         endpoint: REALTIME_ENDPOINT
       },
       systemStatus: {
-        overall: orusConnected && discovered.length > 0 ? 'OPERATIONAL' : 'PARTIAL',
-        timestamp: new Date().toISOString()
+        overall: orusConnected && discovered.length > 0 ? 'OPERATIONAL' : 
+                orusConnected ? 'PARTIAL' : 'DISCONNECTED',
+        timestamp: new Date().toISOString(),
+        issues: orusError ? [orusError] : []
       }
     });
 
