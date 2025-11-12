@@ -1,13 +1,172 @@
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Brain, Server, Bot, ArrowRight, Shield, Lock, Database, Code, CheckCircle } from "lucide-react";
+
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4">
-      <div className="relative w-24 h-24 md:w-32 md:h-32">
-        <img
-          src="/logo.svg"
-          alt="Z.ai Logo"
-          className="w-full h-full object-contain"
-        />
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
+      <div className="max-w-7xl w-full space-y-8">
+        <div className="text-center space-y-4">
+          <div className="relative">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center animate-pulse">
+              <span className="text-2xl sm:text-4xl font-bold text-white">🧠</span>
+            </div>
+            <div className="absolute inset-0 w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-ping opacity-20"></div>
+          </div>
+          
+          <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            🧠 TECCIA-Z Control Center
+          </h1>
+          <p className="text-lg sm:text-2xl text-gray-300">
+            Panel de control del ecosistema cognitivo distribuido ORUS
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Trabajos Realizados - Restaurar tarjeta */}
+          <Card className="border-2 border-purple-100 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
+                <Code className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
+                Módulos Desarrollados
+              </CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Visualiza todos los módulos del sistema desarrollados
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 rounded-lg">
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
+                <div>
+                  <div className="font-medium text-xs sm:text-sm">5 Módulos Listos</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground">100% Funcional</div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link href="/trabajos-realizados">
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-sm sm:text-base">
+                    <Code className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Ver Trabajos</span>
+                    <span className="sm:hidden">Ver</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ORUS Direct Connection */}
+          <Card className="border-2 border-blue-100 shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
+                <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                Chat con Asistente IA
+              </CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Conecta directamente con el asistente de IA ORUS
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-blue-50 rounded-lg">
+                <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                <div>
+                  <div className="font-medium text-xs sm:text-sm">Chat en Vivo</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground">Conexión real</div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link href="/orus-direct-chat">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-sm sm:text-base">
+                    <Brain className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Chatear con ORUS</span>
+                    <span className="sm:hidden">Chat</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* AnythingLLM Test */}
+          <Card className="border-2 border-green-100 shadow-lg bg-gradient-to-br from-green-50 to-blue-50">
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
+                <Database className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                Base de Datos IA
+              </CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Accede a la base de conocimientos de IA
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-green-50 rounded-lg">
+                <Lock className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                <div>
+                  <div className="font-medium text-xs sm:text-sm">API Key Real</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground hidden xs:block">HHNP18V-MRK4BT0...</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground xs:hidden">API Key</div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link href="/anythingllm-test">
+                  <Button className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-sm sm:text-base">
+                    <Database className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Test AnythingLLM</span>
+                    <span className="sm:hidden">Test</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Production Version */}
+          <Card className="border-2 border-red-100 shadow-lg bg-gradient-to-br from-red-50 to-orange-50">
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg lg:text-xl flex items-center gap-2 text-left">
+                <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+                Sistema en Producción
+              </CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Control y monitoreo del sistema en producción
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-red-50 rounded-lg">
+                <Server className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+                <div>
+                  <div className="font-medium text-xs sm:text-sm">Conexión Real</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground hidden xs:block">ORUS production</div>
+                  <div className="text-xs text-xs sm:text-xs text-muted-foreground xs:hidden">Production</div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link href="/orus-production">
+                  <Button className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-sm sm:text-base">
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">ORUS Production</span>
+                    <span className="sm:hidden">ORUS</span>
+                    <Lock className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-left text-xs sm:text-sm text-gray-400 space-y-2 border-t border-slate-700 pt-4 sm:pt-6">
+          <p className="hidden xs:block">🧠 TECCIA-Z Development Team | ORUS ModelScope Agent Integration | 🎯 Chat ORUS 2 Columnas</p>
+          <p className="xs:hidden">🧠 TECCIA-Z | ORUS Integration | 🎯 Chat ORUS 2 Columnas</p>
+          <p>📦 Versión 2.1.1 | 🚀 MS-Agent v1.4.0 Integrado | 🔧 Todos los Módulos Operativos | 🎯 Sistema Production Ready</p>
+          <p className="hidden xs:block">Panel de Control TECCIA-Z - Sistema de Gestión de Proyectos Cognitivos</p>
+          <p className="xs:hidden">TECCIA-Z - Gestión de Proyectos Cognitivos</p>
+        </div>
       </div>
     </div>
-  )
+  );
 }
